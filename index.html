@@ -1,222 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Quebra-Cabeça do Amor 💖</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #ffe6f2;
-            font-family: 'Arial', cursive;
-            margin: 0;
-            min-height: 100vh;
-            touch-action: none;
-        }
-
-        #puzzle-container {
-            width: 80vmin;
-            height: 80vmin;
-            border: 3px solid #ff6699;
-            border-radius: 15px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 102, 153, 0.3);
-            margin-top: 20px;
-            background: #fff;
-        }
-
-        .puzzle-piece {
-            position: absolute;
-            cursor: grab;
-            transition: transform 0.3s;
-            border: 1px solid #ff99bb;
-            box-sizing: border-box;
-            background-size: cover;
-            user-select: none;
-        }
-
-        .puzzle-piece:active {
-            cursor: grabbing;
-            transition: none;
-            z-index: 1;
-        }
-
-        #message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(255, 102, 153, 0.5);
-            z-index: 1000;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memórias Especiais</title>
+    <link rel="stylesheet" href="TerceiraoCSS.css">
 </head>
 <body>
-    <h1>Monte Nosso Momento Especial 💖</h1>
-    <div id="puzzle-container"></div>
-    <div id="message">
-        <h2>Parabéns, Amor! ❤️</h2>
-        <p>Você completou nosso quebra-cabeça perfeito!</p>
-        <p>Eu te amo mais que tudo! 😘</p>
+    <header>
+        <h1>EM BREVE...</h1>
+        <p>Um lugar para guardar momentos inesquecíveis</p>
+    </header>
+
+    <div class="container">
+        <div class="gallery">
+            
+ 
+            
+        </div>
     </div>
 
-    <script>
-        // Cole AQUI o Base64 completo da sua imagem
-        const base64Image = 'leoenamorada.jpg'; // Imagem exemplo
-
-        const PUZZLE_SIZE = 4; // Número de peças por linha
-        let pieces = [];
-        let activePiece = null;
-        let offset = { x: 0, y: 0 };
-
-        function initPuzzle() {
-            const container = document.getElementById('puzzle-container');
-            const img = new Image();
-            
-            img.onload = function() {
-                const containerSize = Math.min(img.width, img.height, 600);
-                container.style.width = containerSize + 'px';
-                container.style.height = containerSize + 'px';
-                
-                createPieces(img, containerSize);
-                shufflePieces();
-                addEventListeners();
-            };
-
-            img.onerror = () => alert('Erro ao carregar a imagem!');
-            img.src = base64Image;
-        }
-
-        function createPieces(img, containerSize) {
-            const pieceSize = containerSize / PUZZLE_SIZE;
-            const puzzleContainer = document.getElementById('puzzle-container');
-            
-            for(let row = 0; row < PUZZLE_SIZE; row++) {
-                for(let col = 0; col < PUZZLE_SIZE; col++) {
-                    const piece = document.createElement('div');
-                    piece.className = 'puzzle-piece';
-                    piece.style.width = pieceSize + 'px';
-                    piece.style.height = pieceSize + 'px';
-                    piece.style.backgroundImage = `url(${img.src})`;
-                    piece.style.backgroundSize = `${containerSize}px ${containerSize}px`;
-                    piece.style.backgroundPosition = `-${col * pieceSize}px -${row * pieceSize}px`;
-                    piece.dataset.originalX = col * pieceSize;
-                    piece.dataset.originalY = row * pieceSize;
-                    
-                    pieces.push(piece);
-                    puzzleContainer.appendChild(piece);
-                }
-            }
-        }
-
-        function addEventListeners() {
-            pieces.forEach(piece => {
-                piece.addEventListener('mousedown', startDrag);
-                piece.addEventListener('touchstart', startDrag, { passive: false });
-            });
-            
-            document.addEventListener('mousemove', dragPiece);
-            document.addEventListener('touchmove', dragPiece, { passive: false });
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('touchend', stopDrag);
-        }
-
-        function startDrag(e) {
-            e.preventDefault();
-            activePiece = e.target;
-            const rect = activePiece.getBoundingClientRect();
-            
-            if(e.type === 'touchstart') {
-                offset.x = e.touches[0].clientX - rect.left;
-                offset.y = e.touches[0].clientY - rect.top;
-            } else {
-                offset.x = e.clientX - rect.left;
-                offset.y = e.clientY - rect.top;
-            }
-            
-            activePiece.style.transition = 'none';
-        }
-
-        function dragPiece(e) {
-            if(!activePiece) return;
-            e.preventDefault();
-            
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            const container = document.getElementById('puzzle-container');
-            const containerRect = container.getBoundingClientRect();
-            const maxX = containerRect.width - activePiece.offsetWidth;
-            const maxY = containerRect.height - activePiece.offsetHeight;
-            
-            let x = clientX - containerRect.left - offset.x;
-            let y = clientY - containerRect.top - offset.y;
-            
-            x = Math.max(0, Math.min(x, maxX));
-            y = Math.max(0, Math.min(y, maxY));
-            
-            activePiece.style.left = x + 'px';
-            activePiece.style.top = y + 'px';
-        }
-
-        function stopDrag() {
-            if(!activePiece) return;
-            
-            activePiece.style.transition = 'transform 0.3s';
-            checkPosition(activePiece);
-            activePiece = null;
-            
-            if(checkCompletion()) {
-                document.getElementById('message').style.display = 'block';
-            }
-        }
-
-        function checkPosition(piece) {
-            const tolerance = 15;
-            const currentX = parseFloat(piece.style.left);
-            const currentY = parseFloat(piece.style.top);
-            const targetX = parseFloat(piece.dataset.originalX);
-            const targetY = parseFloat(piece.dataset.originalY);
-            
-            if(Math.abs(currentX - targetX) < tolerance && 
-               Math.abs(currentY - targetY) < tolerance) {
-                piece.style.left = targetX + 'px';
-                piece.style.top = targetY + 'px';
-            }
-        }
-
-        function checkCompletion() {
-            return pieces.every(piece => {
-                const currentX = parseFloat(piece.style.left);
-                const currentY = parseFloat(piece.style.top);
-                const targetX = parseFloat(piece.dataset.originalX);
-                const targetY = parseFloat(piece.dataset.originalY);
-                return currentX === targetX && currentY === targetY;
-            });
-        }
-
-        function shufflePieces() {
-            const container = document.getElementById('puzzle-container');
-            const containerWidth = container.offsetWidth;
-            const containerHeight = container.offsetHeight;
-            
-            pieces.forEach(piece => {
-                const maxX = containerWidth - piece.offsetWidth;
-                const maxY = containerHeight - piece.offsetHeight;
-                piece.style.left = Math.random() * maxX + 'px';
-                piece.style.top = Math.random() * maxY + 'px';
-            });
-        }
-
-        // Iniciar o jogo
-        initPuzzle();
-    </script>
+    <footer>
+        <p>Criado com ❤️ para guardar momentos especiais</p>
+    </footer>
 </body>
 </html>
